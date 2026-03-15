@@ -4,18 +4,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 
-# -----------------------------
 # Embedding model
-# -----------------------------
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
 persist_directory = "db"
 
-# -----------------------------
+
 # Build or load vector DB
-# -----------------------------
 if not os.path.exists(persist_directory):
     print("Creating database...")
 
@@ -44,14 +41,9 @@ else:
         embedding_function=embeddings
     )
 
-# -----------------------------
 # Metric function: Context Relevance
-# -----------------------------
 def keyword_feedback(results):
-    """
-    بررسی وجود کلمات کلیدی ناسا در chunks بازیابی‌شده
-    و محاسبه score بین 0 تا 1
-    """
+    
     keywords = ["NASA", "space", "Mars", "astronaut", "rocket", "satellite", "ISS", "Apollo", "mission"]
     score = 0
     for chunk in results:
@@ -59,9 +51,7 @@ def keyword_feedback(results):
             score += 1
     return score / max(len(results), 1)
 
-# -----------------------------
 # Query loop
-# -----------------------------
 print("\nRAG ready 🚀")
 
 while True:
@@ -83,8 +73,6 @@ while True:
         print(r.page_content)
         print("-" * 50)
 
-    # -----------------------------
     # Evaluate Context Relevance
-    # -----------------------------
     score = keyword_feedback(results)
     print(f"Context Relevance Score: {score:.2f}")
